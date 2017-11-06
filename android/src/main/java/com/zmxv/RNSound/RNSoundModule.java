@@ -107,7 +107,9 @@ public class RNSoundModule extends ReactContextBaseJavaModule {
       @Override
       public synchronized boolean onError(MediaPlayer mp, int what, int extra) {
         Log.e("RNSoundModule", "onError: Something bad happened!");
-
+        Log.e("RNSoundModule", "onError: what: " + what);
+        Log.e("RNSoundModule", "onError: extra: " + extra);
+        
         if (callbackWasCalled) return true;
         callbackWasCalled = true;
         try {
