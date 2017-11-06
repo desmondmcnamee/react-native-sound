@@ -43,6 +43,7 @@ public class RNSoundModule extends ReactContextBaseJavaModule {
 
   @ReactMethod
   public void prepare(final String fileName, final Integer key, final ReadableMap options, final Callback callback) {
+    Log.e("RNSoundModule", "prepare: Preparing!");
     MediaPlayer player = createMediaPlayer(fileName);
     if (player == null) {
       WritableMap e = Arguments.createMap();
@@ -173,6 +174,7 @@ public class RNSoundModule extends ReactContextBaseJavaModule {
 
   @ReactMethod
   public void play(final Integer key, final Callback callback) {
+    Log.e("RNSoundModule", "play: playing!");
     MediaPlayer player = this.playerPool.get(key);
     if (player == null) {
       callback.invoke(false);
