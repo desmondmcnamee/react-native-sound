@@ -46,6 +46,7 @@ public class RNSoundModule extends ReactContextBaseJavaModule {
     Log.e("RNSoundModule", "prepare: Preparing!");
     MediaPlayer player = createMediaPlayer(fileName);
     if (player == null) {
+      Log.e("RNSoundModule", "prepare: Failed to make player!");
       WritableMap e = Arguments.createMap();
       e.putInt("code", -1);
       e.putString("message", "resource not found");
@@ -80,7 +81,11 @@ public class RNSoundModule extends ReactContextBaseJavaModule {
 
       @Override
       public synchronized void onPrepared(MediaPlayer mp) {
-        if (callbackWasCalled) return;
+        Log.e("RNSoundModule", "onPrepared: Prepared!");
+        if (callbackWasCalled) {
+          Log.e("RNSoundModule", "onPrepared: callbackWasCalled == true!");
+          return;
+        }
         callbackWasCalled = true;
 
         module.playerPool.put(key, mp);
@@ -101,6 +106,8 @@ public class RNSoundModule extends ReactContextBaseJavaModule {
 
       @Override
       public synchronized boolean onError(MediaPlayer mp, int what, int extra) {
+        Log.e("RNSoundModule", "onError: Something bad happened!");
+
         if (callbackWasCalled) return true;
         callbackWasCalled = true;
         try {
@@ -125,9 +132,11 @@ public class RNSoundModule extends ReactContextBaseJavaModule {
   }
 
   protected MediaPlayer createMediaPlayer(final String fileName) {
+    Log.e("RNSoundModule", "createMediaPlayer: creating thing!");
     int res = this.context.getResources().getIdentifier(fileName, "raw", this.context.getPackageName());
     MediaPlayer mediaPlayer = new MediaPlayer();
     if (res != 0) {
+      Log.e("RNSoundModule", "createMediaPlayer: (res != 0)!");
       try {
         AssetFileDescriptor afd = context.getResources().openRawResourceFd(res);
         mediaPlayer.setDataSource(afd.getFileDescriptor(), afd.getStartOffset(), afd.getLength());
@@ -163,12 +172,15 @@ public class RNSoundModule extends ReactContextBaseJavaModule {
         }
     }
 
+    Log.e("RNSoundModule", "createMediaPlayer: creating with filename " + fileName);
     File file = new File(fileName);
     if (file.exists()) {
       Uri uri = Uri.fromFile(file);
       // Mediaplayer is already prepared here.
       return MediaPlayer.create(this.context, uri);
     }
+
+    Log.e("RNSoundModule", "createMediaPlayer: umm i could not find that file" + fileName);
     return null;
   }
 
